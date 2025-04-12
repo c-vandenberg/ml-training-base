@@ -7,8 +7,8 @@ from src.data.utils.logging_utils import configure_logger
 
 class BaseSupervisedTrainer:
     """
-    A base class for supervised trainers, providing a typical machine learning
-    training workflow from environment setup through model evaluation.
+    A base class for supervised learning trainers, providing a typical supervised machine
+    learning training workflow from environment setup through model evaluation.
 
     Attributes
     ----------
