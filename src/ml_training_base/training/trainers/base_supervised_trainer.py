@@ -1,9 +1,9 @@
 import os
 import yaml
-from typing import Dict, Type, Any
+from typing import Dict, Any
 
-from src.training.environment.base_environment import BaseEnvironment
-from src.data.utils.logging_utils import configure_logger
+from src.ml_training_base.training.environment.base_environment import BaseEnvironment
+from src.ml_training_base.data.utils.logging_utils import configure_logger
 
 class BaseSupervisedTrainer:
     """

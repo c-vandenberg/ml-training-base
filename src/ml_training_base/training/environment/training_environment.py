@@ -5,9 +5,8 @@ from typing import Dict, Any
 
 import numpy as np
 import tensorflow as tf
-from tensorflow.keras import mixed_precision
 
-from src.training.environment.base_environment import BaseEnvironment
+from src.ml_training_base.training.environment.base_environment import BaseEnvironment
 
 class TrainingEnvironment(BaseEnvironment):
     """
