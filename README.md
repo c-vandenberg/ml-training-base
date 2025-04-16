@@ -9,12 +9,12 @@ ml-training-base is a Python library providing base classes and utilities for su
 By using these abstractions, you can quickly spin up a new ML pipeline with consistent structure and easily extend or override specific components to suit your needs.
 
 # Table of Contents
-1. Features
-2. Installation
-3. Quick Start
-4. Package Structure
-5. Configuration File
-6. License
+1. [Features](https://github.com/c-vandenberg/ml-training-base?tab=readme-ov-file#features)
+2. [Installation](https://github.com/c-vandenberg/ml-training-base?tab=readme-ov-file#installation)
+3. [Quick Start](https://github.com/c-vandenberg/ml-training-base?tab=readme-ov-file#quick-start)
+4. [Package Structure](https://github.com/c-vandenberg/ml-training-base?tab=readme-ov-file#package-structure)
+5. [Configuration File](https://github.com/c-vandenberg/ml-training-base?tab=readme-ov-file#configuration-file)
+6. [License](https://github.com/c-vandenberg/ml-training-base?tab=readme-ov-file#license)
 
 ## Features
 * Reusable Base Classes: Standard building blocks for data loading, training, callbacks, and environment management. 
