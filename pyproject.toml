@@ -10,14 +10,13 @@ name = "ml-training-base"
 version = "0.1.0"
 description = "A base library for ML training (supervised) with environment setup and logging."
 readme = "README.md"
-license = "MIT"
+license = { text = "MIT"}
 authors = [
   { name="Chris van den Berg", email="cvandenberg1105@googlemail.com" }
 ]
 keywords = ["machine-learning", "training", "tensorflow", "keras", "supervised-learning"]
 classifiers = [
     "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent"
 ]
 requires-python = ">=3.7"
@@ -28,5 +27,5 @@ dependencies = [
     "pyyaml>=5.4"
 ]
 
-[project]
-packages = ["ml_training_base"]
+[tool.setuptools]
+packages = { find = { where = ["src"] } }

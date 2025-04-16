@@ -55,22 +55,22 @@ class TrainingEnvironment(BaseEnvironment):
             - However, configuring TensorFlow to use the CPU (`os.environ['CUDA_VISIBLE_DEVICES'] = ''`) and configuring
             Tensorflow to use single-threaded execution severely impacts performance.
         """
-        env_config = config.get('env', {})
-        determinism_config = env_config.get('determinism', {})
+        if config.get('env') is not None:
+            env_config = config.get('env', {})
+            determinism_config = env_config.get('determinism', {})
+        else:
+            determinism_config = config.get('determinism', {})
 
-        if not env_config or not determinism_config:
-            self._logger.error("Configuration YAML file must have `env: determinism` key-value pair.")
-            return None
-
-        determinism_conf: Dict[str, Any] = config['env']['determinism']
+        if not determinism_config:
+            raise KeyError("Configuration YAML file must have `env: determinism` key-value pair.")
 
         # Set Python's built-in hash seed
-        os.environ['PYTHONHASHSEED'] = str(determinism_conf['python_seed'])
+        os.environ['PYTHONHASHSEED'] = str(determinism_config['python_seed'])
 
         # Set seeds for random number generators
-        random.seed(determinism_conf['random_seed'])
-        np.random.seed(determinism_conf['numpy_seed'])
-        tf.random.set_seed(determinism_conf['tf_seed'])
+        random.seed(determinism_config['random_seed'])
+        np.random.seed(determinism_config['numpy_seed'])
+        tf.random.set_seed(determinism_config['tf_seed'])
 
         ## mixed_precision.set_global_policy('float64')
 
