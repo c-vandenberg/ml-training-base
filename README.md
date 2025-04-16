@@ -1,6 +1,6 @@
-# ml-training-base
+# Machine Learning Training Base (ml-training-base)
 
-ml-training-base is a Python library providing base classes and utilities for supervised machine learning projects. It includes:
+`ml-training-base` is a Python library providing base classes and utilities for supervised machine learning projects. It includes:
 * A configurable logging setup for both console and file outputs. 
 * Base classes for data loaders (`BaseSupervisedDataLoader`).
 * An environment setup class for deterministic training (`TrainingEnvironment`), ensuring reproducible runs.
