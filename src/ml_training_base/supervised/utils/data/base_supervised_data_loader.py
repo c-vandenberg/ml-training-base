@@ -45,7 +45,6 @@ class BaseSupervisedDataLoader(ABC):
 
         self._train_split = 1.0 - total_split
 
-        # Internal placeholders for the final datasets
         self._train_dataset = None
         self._valid_dataset = None
         self._test_dataset = None
