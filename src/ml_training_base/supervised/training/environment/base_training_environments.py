@@ -1,12 +1,19 @@
 import os
 import random
 import logging
+from abc import ABC, abstractmethod
 from typing import Dict, Any
 
 import numpy as np
 import tensorflow as tf
 
-from src.ml_training_base.training.environment.base_environment import BaseEnvironment
+class BaseEnvironment(ABC):
+    @abstractmethod
+    def setup_environment(self, config: Dict[str, Any]) -> None:
+        """
+        Setup environment for training, e.g., determinism, GPU config, seeds, etc.
+        """
+        pass
 
 class TrainingEnvironment(BaseEnvironment):
     """
