@@ -1,8 +1,7 @@
 import os
 import logging
 import tempfile
-import pytest
-from ml_training_base.data.utils.logging_utils import configure_logger
+from ml_training_base.utils.logging.logging_utils import configure_logger
 
 def test_configure_logger():
     # Use a temporary file for logging.
