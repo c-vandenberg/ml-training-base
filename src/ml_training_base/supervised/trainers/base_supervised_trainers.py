@@ -3,21 +3,22 @@ import yaml
 from abc import ABC, abstractmethod
 from typing import Dict, Any, List, Union
 
-from ml_training_base.supervised.training.environment.base_training_environments import BaseEnvironment
+from ml_training_base.supervised.environments.base_training_environments import BaseEnvironment
 from ml_training_base.utils.logging.logging_utils import configure_logger
 
 import tensorflow as tf
 from tensorflow.keras.callbacks import (Callback, EarlyStopping, TensorBoard,
                                         ReduceLROnPlateau, ModelCheckpoint)
 import torch
-from torch.utils.data import DataLoader
+
 
 class BaseSupervisedTrainer(ABC):
     """
     Abstract base class for any supervised learning trainer.
 
     This class is framework and architecture-agnostic. It defines the essential
-    structure and sequence of a supervised training pipeline.
+    structure and sequence of a supervised training pipeline and acts as the base
+    layer for all supervised learning trainers.
 
     Attributes
     ----------
@@ -227,8 +228,10 @@ class BaseKerasSupervisedTrainer(BaseSupervisedTrainer, ABC):
     """
     Abstract base class for a standard TensorFlow/Keras supervised learning workflow.
 
-    This class is framework-specific (TensorFLow/Keras) but architecture-agnostic. It
-    provides default implementations for training environment setup, setting up common
+    This class serves as an intermediate layer for all TensorFLow/Keras-based trainers.
+    It is framework-specific (TensorFLow/Keras) but remains architecture-agnostic.
+
+    It provides default implementations for training environment setup, setting up common
     callbacks, model saving, and evaluation, while delegating model and data-specific
     logic to subclasses.
 
@@ -403,3 +406,55 @@ class BaseKerasSupervisedTrainer(BaseSupervisedTrainer, ABC):
         os.makedirs(os.path.dirname(save_path), exist_ok=True)
         self._model.save(save_path)
         self._logger.info(f"Model saved to {save_path}")
+
+class BasePyTorchSupervisedTrainer(BaseSupervisedTrainer, ABC):
+    """
+    Abstract base class for a standard PyTorch supervised learning workflow.
+
+    This class serves as an intermediate layer for all PyTorch-based trainers.
+    It is framework-specific (PyTorch) but remains architecture-agnostic.
+
+    Common PyTorch-related logic can be factored into this class later as
+    patterns emerge from concrete implementations.
+
+    Attributes
+    ----------
+    _model : torch.nn.Module
+        The PyTorch model to be trained.
+    _optimizer : torch.optim.Optimizer
+        The optimizer for training the model.
+    _loss_fn : Any
+        The loss function.
+    _device : str
+        The device to run the training on ('cuda' or 'cpu').
+    _train_loader : torch.utils.data.DataLoader
+        The data loader for the training dataset.
+    _valid_loader : torch.utils.data.DataLoader
+        The data loader for the validation dataset.
+    _test_loader : torch.utils.data.DataLoader
+        The data loader for the test dataset.
+
+    """
+    def __init__(self, config_path: str, training_env: BaseEnvironment):
+        """
+        Initialise the BasePyTorchSupervisedTrainer.
+
+        Parameters
+        ----------
+        config_path : str
+            Path to the YAML configuration file.
+        training_env : BaseEnvironment
+            Class responsible for setting up the training environment.
+
+        """
+        super().__init__(config_path=config_path, training_env=training_env)
+
+        self._model: Union[torch.nn.Module, None] = None
+        self._optimizer: Union[torch.optim.Optimizer, None] = None
+        self._loss_fn: Any = None
+        self._device: str = 'cuda' if torch.cuda.is_available() else 'cpu'
+        self._train_loader: Union[torch.utils.data.DataLoader, None] = None
+        self._valid_loader: Union[torch.utils.data.DataLoader, None] = None
+        self._test_loader: Union[torch.utils.data.DataLoader, None] = None
+
+    pass
