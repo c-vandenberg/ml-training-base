@@ -8,7 +8,7 @@ import numpy as np
 import tensorflow as tf
 import torch
 
-class BaseEnvironment(ABC):
+class BaseTrainingEnvironment(ABC):
     """
     Abstract base class for setting up a training environment.
 
@@ -92,7 +92,7 @@ class BaseEnvironment(ABC):
         """
         raise NotImplementedError
 
-class KerasTrainingEnvironment(BaseEnvironment):
+class KerasTrainingEnvironment(BaseTrainingEnvironment):
     """
     Sets up a deterministic environment specifically for TensorFlow/Keras.
     """
@@ -157,7 +157,7 @@ class KerasTrainingEnvironment(BaseEnvironment):
             tf.config.threading.set_inter_op_parallelism_threads(1)
 
 
-class PyTorchEnvironment(BaseEnvironment):
+class PyTorchTrainingEnvironment(BaseTrainingEnvironment):
     """
     Sets up a deterministic environment specifically for PyTorch.
     """
