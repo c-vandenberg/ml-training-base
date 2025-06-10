@@ -1,5 +1,4 @@
 import logging
-from typing import Any
 from abc import ABC, abstractmethod
 
 class BaseSupervisedDataLoader(ABC):
