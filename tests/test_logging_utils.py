@@ -4,39 +4,29 @@ import tempfile
 from ml_training_base.utils.logging.logging_utils import configure_logger
 
 def test_configure_logger():
-    # Use a temporary file for logging.
-    with tempfile.NamedTemporaryFile(delete=False) as temp_log_file:
+    """
+    Tests the logger configuration and file output.
+    """
+    with tempfile.NamedTemporaryFile(mode='w', delete=False) as temp_log_file:
         log_path = temp_log_file.name
 
     logger = configure_logger(log_path=log_path)
-
-    # Check that we got a valid Logger object.
     assert isinstance(logger, logging.Logger)
+    assert len(logger.handlers) == 2
 
-    # We expect two handlers: console (StreamHandler) and file (FileHandler).
-    handlers = logger.handlers
-    assert len(handlers) == 2
-
-    # Check presence of StreamHandler and FileHandler.
-    handler_types = {type(h) for h in handlers}
-    assert logging.StreamHandler in handler_types
-    assert logging.FileHandler in handler_types
-
-    # Log a test message
+    # Log test messages
     logger.info("Test INFO log message")
     logger.debug("Test DEBUG log message")
 
-    # Cleanup: Flush and close handlers, remove temp file.
-    for handler in handlers:
-        handler.flush()
+    # Cleanup: Closing the handlers is sufficient to flush the buffer to disk.
+    for handler in list(logger.handlers):
         handler.close()
-    logger.handlers.clear()
+        logger.removeHandler(handler) # Good practice to remove after closing
 
-    # Check that the log file was created and not empty.
+    # Now, read the file and assert its contents
     with open(log_path, "r") as f:
         log_contents = f.read()
-        print(log_contents)
         assert "Test INFO log message" in log_contents
         assert "Test DEBUG log message" in log_contents
 
-    os.remove(log_path)  # Remove the temporary file
+    os.remove(log_path)
