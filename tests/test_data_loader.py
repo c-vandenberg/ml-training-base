@@ -4,18 +4,13 @@ from ml_training_base.utils.logging.logging_utils import configure_logger
 from ml_training_base.supervised.utils.data.base_supervised_data_loader import BaseSupervisedDataLoader
 
 class ConcreteDataLoader(BaseSupervisedDataLoader):
-    def load_data(self):
-        return "Data loaded"
-    def split_data(self):
-        return "Data split"
-    def get_dataset(self, data, training=True):
-        return f"Dataset({data}, training={training})"
-    def get_train_dataset(self):
-        return "Train dataset"
-    def get_valid_dataset(self):
-        return "Validation dataset"
-    def get_test_dataset(self):
-        return "Test dataset"
+    def setup_datasets(self):
+        """
+        Simulates setting up datasets and populates the attributes.
+        """
+        self._train_dataset = "Train Dataset Ready"
+        self._valid_dataset = "Validation Dataset Ready"
+        self._test_dataset = "Test Dataset Ready"
 
 @pytest.fixture
 def mock_logger():
@@ -23,46 +18,40 @@ def mock_logger():
     return configure_logger("/dev/null")
 
 def test_base_data_loader_init(mock_logger):
-    # Check for error if test_split + validation_split >= 1
-    with pytest.raises(ValueError):
-        _ = ConcreteDataLoader(
-            x_data_file_path="x.csv",
-            y_data_file_path="y.csv",
-            test_split=0.5,
-            validation_split=0.6,
-            logger=mock_logger,
-        )
-
-    loader = ConcreteDataLoader(
-        x_data_file_path="x.csv",
-        y_data_file_path="y.csv",
-        test_split=0.2,
-        validation_split=0.2,
-        logger=mock_logger,
-    )
-
-    assert loader._x_data_file_path == "x.csv"
-    assert loader._y_data_file_path == "y.csv"
+    """
+    Tests the constructor logic and split calculations.
+    """
+    # Test correct initialization
+    loader = ConcreteDataLoader(test_split=0.2, validation_split=0.1, logger=mock_logger)
     assert loader._test_split == 0.2
-    assert loader._validation_split == 0.2
-    assert loader._train_split == 0.6
+    assert loader._validation_split == 0.1
+    # Use pytest.approx for float comparison
+    assert loader._train_split == pytest.approx(0.7)
 
-def test_base_data_loader_methods(mock_logger):
-    loader = ConcreteDataLoader(
-        x_data_file_path="x.csv",
-        y_data_file_path="y.csv",
-        test_split=0.2,
-        validation_split=0.2,
-        logger=mock_logger,
-    )
+    # Check for error if splits are invalid
+    with pytest.raises(ValueError, match="must be between 0 and 1"):
+        ConcreteDataLoader(test_split=1.5, validation_split=0.1, logger=mock_logger)
 
-    assert loader.load_data() == "Data loaded"
-    assert loader.split_data() == "Data split"
-    assert loader.get_dataset("raw_data") == "Dataset(raw_data, training=True)"
-    assert loader.get_train_dataset() == "Train dataset"
-    assert loader.get_valid_dataset() == "Validation dataset"
-    assert loader.get_test_dataset() == "Test dataset"
+    # Check for error if sum of splits is invalid
+    with pytest.raises(ValueError, match="sum of `test_split` and `validation_split`"):
+        ConcreteDataLoader(test_split=0.5, validation_split=0.6, logger=mock_logger)
 
-    for handler in list(mock_logger.handlers):
-        handler.close()
-        mock_logger.removeHandler(handler)
+def test_base_data_loader_getters(mock_logger):
+    """
+    Tests the dataset getter methods and their dependency on setup_datasets().
+    """
+    loader = ConcreteDataLoader(test_split=0.2, validation_split=0.1, logger=mock_logger)
+
+    # Assert that getters fail before setup_datasets() is called
+    with pytest.raises(RuntimeError, match="Dataset not set up"):
+        loader.get_train_dataset()
+    with pytest.raises(RuntimeError, match="Dataset not set up"):
+        loader.get_valid_dataset()
+    with pytest.raises(RuntimeError, match="Dataset not set up"):
+        loader.get_test_dataset()
+
+    # Call setup and then test the getters
+    loader.setup_datasets()
+    assert loader.get_train_dataset() == "Train Dataset Ready"
+    assert loader.get_valid_dataset() == "Validation Dataset Ready"
+    assert loader.get_test_dataset() == "Test Dataset Ready"
