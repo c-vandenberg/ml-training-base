@@ -1,23 +1,31 @@
 import os
-import tempfile
-import yaml
 import pytest
 import logging
+import yaml
+import tempfile
 from unittest.mock import patch
 
 from ml_training_base.supervised.trainers.base_supervised_trainers import BaseSupervisedTrainer
 from ml_training_base.supervised.environments.base_training_environments import BaseTrainingEnvironment
 
-# A mock environment for testing purposes
+
 class MockTrainingEnvironment(BaseTrainingEnvironment):
+    """
+    A mock environment that does nothing, for testing the trainer.
+    """
+    def __init__(self, logger: logging.Logger):
+        super().__init__(logger)
     def setup_environment(self, config):
         pass
 
     def _setup_framework_specific_environment(self, determinism_config):
         pass
 
-# A minimal concrete trainer for testing the abstract base class
+
 class ConcreteTrainer(BaseSupervisedTrainer):
+    """
+    A minimal concrete implementation to allow instantiation of the ABC.
+    """
     def _setup_data(self):
         pass
     def _setup_model(self):
@@ -30,13 +38,17 @@ class ConcreteTrainer(BaseSupervisedTrainer):
         pass
 
 @pytest.fixture
-def mock_config() -> dict:
-    """Provides a minimal config dictionary."""
+def mock_config(tmp_path) -> dict: # Use the tmp_path fixture from pytest
+    """
+    Provides a minimal config dictionary with a valid temporary log path.
+    """
+    # Create a subdirectory for logs inside the temporary path
+    log_dir = tmp_path / "logs"
+    log_dir.mkdir()
     return {
-        "data": {"logger_path": "test.log"},
+        "data": {"logger_path": str(log_dir / "test.log")},
         "determinism": {}
     }
-
 
 @pytest.fixture
 def mock_config_file(mock_config: dict) -> str:
