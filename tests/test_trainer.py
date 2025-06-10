@@ -1,88 +1,92 @@
 import os
-import logging
-import pytest
 import tempfile
+import yaml
+import pytest
+import logging
+from unittest.mock import patch
 
-from ml_training_base.training.trainers.base_supervised_trainer import BaseSupervisedTrainer
-from ml_training_base.training.environment.training_environment import TrainingEnvironment
+from ml_training_base.supervised.trainers.base_supervised_trainers import BaseSupervisedTrainer
+from ml_training_base.supervised.environments.base_training_environments import BaseTrainingEnvironment
+
+# A mock environment for testing purposes
+class MockTrainingEnvironment(BaseTrainingEnvironment):
+    def setup_environment(self, config):
+        pass
+
+    def _setup_framework_specific_environment(self, determinism_config):
+        pass
+
+# A minimal concrete trainer for testing the abstract base class
+class ConcreteTrainer(BaseSupervisedTrainer):
+    def _setup_data(self):
+        pass
+    def _setup_model(self):
+        pass
+    def _train(self):
+        pass
+    def _evaluate(self):
+        pass
+    def _save_model(self):
+        pass
 
 @pytest.fixture
-def mock_env_config():
+def mock_config() -> dict:
+    """Provides a minimal config dictionary."""
     return {
-        "env": {
-            "determinism": {
-                "python_seed": 0,
-                "random_seed": 42,
-                "numpy_seed": 42,
-                "tf_seed": 42
-            }
-        },
-        "data": {
-            "logger_dir": "var/log/"
-        }
+        "data": {"logger_path": "test.log"},
+        "determinism": {}
     }
 
-@pytest.fixture
-def mock_config_file(mock_env_config):
-    # Create a temp yaml config file
-    content = """
-    env:
-    determinism:
-        python_seed: 0
-        random_seed: 42
-        numpy_seed: 42
-        tf_seed: 42
 
-    data:
-        logger_path: {}
+@pytest.fixture
+def mock_config_file(mock_config: dict) -> str:
+    """
+    Creates a temporary YAML config file and yields its path.
+
+    This fixture writes a given config dictionary to a temporary file,
+    yields the file path to the test function, and then cleans up by
+    deleting the file after the test is complete.
     """
     with tempfile.NamedTemporaryFile(mode='w', suffix=".yaml", delete=False) as tmp:
-        # Also create a separate file for logs
-        logger_path = mock_env_config.get('data').get('logger_dir')
-        log_file = os.path.join(logger_path, "test_trainer.log")
-        tmp.write(content.format(log_file))
+        yaml.dump(mock_config, tmp)
         tmp_path = tmp.name
 
     yield tmp_path
 
-    # Cleanup
-    if os.path.exists(tmp_path):
-        os.remove(tmp_path)
-    if os.path.exists(log_file):
-        os.remove(log_file)
+    os.remove(tmp_path)
 
-# Minimal subclass for testing
-class TestTrainer(BaseSupervisedTrainer):
-    def _setup_model(self):
-        self._logger.info("Model setup.")
-    def _build_model(self):
-        self._logger.info("Model built.")
-    def _setup_callbacks(self):
-        self._logger.info("Callbacks set up.")
-    def _train(self):
-        self._logger.info("Training...")
-    def _save_model(self):
-        self._logger.info("Model saved.")
-    def _evaluate(self):
-        self._logger.info("Model evaluated.")
+@pytest.fixture
+def mock_logger():
+    """
+    Provides a mock logger.
+    """
+    return logging.getLogger("test_logger")
 
-class MockLogger(logging.Logger):
-    def info(self, msg, **kwargs):
-        pass
+def test_trainer_run_orchestration(mock_config_file: str, mock_logger: logging.Logger):
+    """
+    Tests that the run() method calls the pipeline steps in the correct order.
+    We patch the methods to spy on them without actually running their logic.
+    """
+    with patch.object(ConcreteTrainer, '_setup_environment') as mock_setup_env, \
+         patch.object(ConcreteTrainer, '_setup_data') as mock_setup_data, \
+         patch.object(ConcreteTrainer, '_setup_model') as mock_setup_model, \
+         patch.object(ConcreteTrainer, '_train') as mock_train, \
+         patch.object(ConcreteTrainer, '_evaluate') as mock_evaluate, \
+         patch.object(ConcreteTrainer, '_save_model') as mock_save:
 
-    def error(self, msg, **kwargs):
-        pass
+        # Instantiate the trainer using the path from the mock_config_file fixture
+        trainer = ConcreteTrainer(
+            config_path=mock_config_file,
+            training_env=MockTrainingEnvironment(logger=mock_logger)
+        )
 
-def test_trainer_run(mock_config_file):
-    logger = MockLogger(name='mock_logger')
-    trainer = TestTrainer(
-        config_path=mock_config_file,
-        training_env=TrainingEnvironment(logger=logger)
-    )
+        # Run the pipeline
+        trainer.run()
 
-    # Confirm the config loaded
-    assert "env" in trainer.config
-    assert "data" in trainer.config
-
-    # Run the pipeline
-    trainer.run()
+        # Assert that each method in the pipeline was called exactly once
+        mock_setup_env.assert_called_once()
+        mock_setup_data.assert_called_once()
+        mock_setup_model.assert_called_once()
+        mock_train.assert_called_once()
+        mock_evaluate.assert_called_once()
+        mock_save.assert_called_once()

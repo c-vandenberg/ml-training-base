@@ -3,7 +3,7 @@ import yaml
 from abc import ABC, abstractmethod
 from typing import Dict, Any, List, Union
 
-from ml_training_base.supervised.environments.base_training_environments import BaseEnvironment
+from ml_training_base.supervised.environments.base_training_environments import BaseTrainingEnvironment
 from ml_training_base.utils.logging.logging_utils import configure_logger
 
 import tensorflow as tf
@@ -24,13 +24,13 @@ class BaseSupervisedTrainer(ABC):
     ----------
     _config : Dict[str, Any]
         Configuration dictionary loaded from a YAML file.
-    _training_env : BaseEnvironment
+    _training_env : BaseTrainingEnvironment
         Class instance for setting up the training environment (e.g. seeds
         and device configs for deterministic training).
     _logger : logging.Logger
         Logger instance for logging messages.
     """
-    def __init__(self, config_path: str, training_env: BaseEnvironment):
+    def __init__(self, config_path: str, training_env: BaseTrainingEnvironment):
         self._config: Dict[str, Any] = self._load_config(config_path)
         self._training_env = training_env
         self._logger = self._setup_logger()
@@ -248,7 +248,7 @@ class BaseKerasSupervisedTrainer(BaseSupervisedTrainer, ABC):
     _callbacks : List[tf.keras.callbacks.Callback]
         A list of callbacks to use during training.
     """
-    def __init__(self, config_path: str, training_env: BaseEnvironment):
+    def __init__(self, config_path: str, training_env: BaseTrainingEnvironment):
         super().__init__(config_path=config_path, training_env=training_env)
         self._model: Union[tf.keras.Model, None] = None
         self._train_dataset: Union[tf.data.Dataset, None] = None
@@ -435,7 +435,7 @@ class BasePyTorchSupervisedTrainer(BaseSupervisedTrainer, ABC):
         The data loader for the test dataset.
 
     """
-    def __init__(self, config_path: str, training_env: BaseEnvironment):
+    def __init__(self, config_path: str, training_env: BaseTrainingEnvironment):
         """
         Initialise the BasePyTorchSupervisedTrainer.
 

@@ -37,8 +37,8 @@ pip install ml-training-base
 ```
 import logging
 from ml_training_base.data.utils.logging_utils import configure_logger
-from ml_training_base.training.environment.environment import TrainingEnvironment
-from ml_training_base.training.trainer import BaseSupervisedTrainer
+from ml_training_base.supervised.environments.base_training_environments import KerasTrainingEnvironment
+from ml_training_base.supervised.trainers.base_supervised_trainers import BaseSupervisedTrainer
 ```
 4. **Set up** your environment and trainer:
 ```
@@ -71,7 +71,7 @@ class MyCustomTrainer(BaseSupervisedTrainer):
 # Usage:
 trainer = MyCustomTrainer(
     config_path="path/to/config.yaml",
-    training_env=TrainingEnvironment(logger=logging.getLogger(__name__))
+    training_env=KerasTrainingEnvironment(logger=logging.getLogger(__name__))
 )
 trainer.run()
 ```
@@ -79,24 +79,26 @@ trainer.run()
 ## Package Structure
 ```
 ml-training-base/
-│
+├── pyproject.toml
 ├── src/
 │   └── ml_training_base/
 │       ├── __init__.py
 │       ├── data/
-│       │   ├── __init__.py
 │       │   └── utils/
 │       │       ├── __init__.py
 │       │       └── logging_utils.py
-│       ├── training/
-│       │   ├── __init__.py
-│       │   ├── environment/
-│       │   │   ├── __init__.py
-│       │   │   ├── base_environment.py
-│       │   │   └── environment.py
-│       │   ├── trainer.py
-│       │   └── ...
-│       └── ...
+│       └── supervised/
+│           ├── __init__.py
+│           ├── environments/
+│           │   ├── __init__.py
+│           │   └── base_training_environments.py
+│           ├── trainers/
+│           │   ├── __init__.py
+│           │   └── base_supervised_trainers.py
+│           └── utils/
+│               └── data/
+│                   ├── __init__.py
+│                   └── base_supervised_data_loader.py
 ├── tests/
 │   ├── __init__.py
 │   ├── test_data_loader.py
@@ -110,13 +112,16 @@ ml-training-base/
 
 ### Key Modules
 * `data/utils/logging_utils.py`:
-  * Contains `configure_logger(log_path)` which sets up console/file logging.
-* `training/environment/base_environment.py`: 
-  * Abstract base class `BaseEnvironment` for environment setup tasks.
-* `training/environment/training_environment.py`: 
-  * Implementation of `TrainingEnvironment`, enabling deterministic training (sets seeds, configures TensorFlow ops, etc.).
-* `training/trainer.py`: 
-  * Contains `BaseSupervisedTrainer`, an abstract class to streamline a typical training workflow (environment setup, model creation, training loop, evaluation).
+  * Contains `configure_logger(log_path)` utility, which sets up a standardized console and file logger for use throughout the package.
+* `supervised/environments/base_training_environments.py`: 
+  * Defines the `BaseEnvironment` abstract class for handling environment setup.
+  * Provides concrete, framework-specific implementations like `KerasTrainingEnvironment` and `PyTorchTrainingEnvironment` that manage deterministic setup (setting seeds, configuring hardware options, etc.).
+* `supervised/trainers/base_supervised_trainers.py`: 
+  * Contains the core training framework hierarchy.
+  * `BaseSupervisedTrainer`: The framework-agnostic abstract class that defines the training pipeline (`run()`, `_setup_model()`, `_train()`, etc.).
+  * `BaseKerasSupervisedTrainer` & `BasePyTorchSupervisedTrainer`: Framework-specific abstract classes that implement common boilerplate for Keras (`model.fit()`) and PyTorch (manual training loop).
+* `supervised/utils/data/base_supervised_data_loader.py`: 
+  * Contains the `BaseSupervisedDataLoader` abstract class. This defines the contract for creating data preparation pipelines (`setup_datasets()`, `get_train_dataset()`, etc.) that are used by the trainers.
 
 ## Configuration File
 You can define your runtime settings (e.g., logger paths, environment determinism seeds, model hyperparameters) in a YAML file. 

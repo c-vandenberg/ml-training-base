@@ -3,13 +3,17 @@ ml-training-base: A Python package providing base classes and utilities for mach
 """
 from src.ml_training_base.utils.logging.logging_utils import configure_logger
 
-from src.ml_training_base.supervised.environments.base_training_environments import (BaseTrainingEnvironment,
-                                                                                     KerasTrainingEnvironment,
-                                                                                     PyTorchTrainingEnvironment)
+from src.ml_training_base.supervised.environments.base_training_environments import (
+    BaseTrainingEnvironment,
+    KerasTrainingEnvironment,
+    PyTorchTrainingEnvironment
+)
 
-from src.ml_training_base.supervised.trainers.base_supervised_trainers import (BaseSupervisedTrainer,
-                                                                               BaseKerasSupervisedTrainer,
-                                                                               BasePyTorchSupervisedTrainer)
+from src.ml_training_base.supervised.trainers.base_supervised_trainers import (
+    BaseSupervisedTrainer,
+    BaseKerasSupervisedTrainer,
+    BasePyTorchSupervisedTrainer
+)
 
 from src.ml_training_base.supervised.utils.data.base_supervised_data_loader import BaseSupervisedDataLoader
 
