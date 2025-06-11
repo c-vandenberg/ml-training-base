@@ -10,6 +10,7 @@ from ml_training_base.supervised.environments.base_training_environments import 
     PyTorchTrainingEnvironment
 )
 
+# --- Fixtures ---
 
 @pytest.fixture
 def mock_config():
@@ -34,6 +35,7 @@ def mock_logger():
     """
     return logging.getLogger("test_logger")
 
+# --- Test Functions ---
 
 def test_keras_environment_setup(mock_config, mock_logger):
     """

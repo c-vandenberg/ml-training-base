@@ -8,38 +8,10 @@ from unittest.mock import patch
 from ml_training_base.supervised.trainers.base_supervised_trainers import BaseSupervisedTrainer
 from ml_training_base.supervised.environments.base_training_environments import BaseTrainingEnvironment
 
-
-class MockTrainingEnvironment(BaseTrainingEnvironment):
-    """
-    A mock environment that does nothing, for testing the trainer.
-    """
-    def __init__(self, logger: logging.Logger):
-        super().__init__(logger)
-    def setup_environment(self, config):
-        pass
-
-    def _setup_framework_specific_environment(self, determinism_config):
-        pass
-
-
-class ConcreteTrainer(BaseSupervisedTrainer):
-    """
-    A minimal concrete implementation to allow instantiation of the ABC.
-    """
-    def _setup_data(self):
-        pass
-    def _setup_model(self):
-        pass
-    def _train(self):
-        pass
-    def _evaluate(self):
-        pass
-    def _save_model(self):
-        pass
-
+# --- Fixtures ---
 
 @pytest.fixture
-def mock_config(tmp_path) -> dict: # Use the tmp_path fixture from pytest
+def mock_config(tmp_path) -> dict:
     """
     Provides a minimal config dictionary with a valid temporary log path.
     """
@@ -76,6 +48,36 @@ def mock_logger():
     Provides a mock logger.
     """
     return logging.getLogger("test_logger")
+
+# --- Test Classes and Functions ---
+
+class MockTrainingEnvironment(BaseTrainingEnvironment):
+    """
+    A mock environment that does nothing, for testing the trainer.
+    """
+    def __init__(self, logger: logging.Logger):
+        super().__init__(logger)
+    def setup_environment(self, config):
+        pass
+
+    def _setup_framework_specific_environment(self, determinism_config):
+        pass
+
+
+class ConcreteTrainer(BaseSupervisedTrainer):
+    """
+    A minimal concrete implementation to allow instantiation of the ABC.
+    """
+    def _setup_data(self):
+        pass
+    def _setup_model(self):
+        pass
+    def _train(self):
+        pass
+    def _evaluate(self):
+        pass
+    def _save_model(self):
+        pass
 
 
 def test_trainer_run_orchestration(mock_config_file: str, mock_logger: logging.Logger):

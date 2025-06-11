@@ -3,6 +3,14 @@ import pytest
 from ml_training_base.utils.logging.logging_utils import configure_logger
 from ml_training_base.supervised.utils.data.base_supervised_data_loader import BaseSupervisedDataLoader
 
+# --- Fixtures ---
+
+@pytest.fixture
+def mock_logger():
+    # Reuse or create a logger using /dev/null on Unix to discard logs
+    return configure_logger("/dev/null")
+
+# --- Test Classes and Functions ---
 
 class ConcreteDataLoader(BaseSupervisedDataLoader):
     def setup_datasets(self):
@@ -12,12 +20,6 @@ class ConcreteDataLoader(BaseSupervisedDataLoader):
         self._train_dataset = "Train Dataset Ready"
         self._valid_dataset = "Validation Dataset Ready"
         self._test_dataset = "Test Dataset Ready"
-
-
-@pytest.fixture
-def mock_logger():
-    # Reuse or create a logger using /dev/null on Unix to discard logs
-    return configure_logger("/dev/null")
 
 
 def test_base_data_loader_init(mock_logger):
