@@ -3,7 +3,7 @@ import logging
 import sqlite3
 from pathlib import Path
 
-from ml_training_base import BaseDataPreprocessor
+from ml_training_base.data.preprocessing.base_data_preprocessors import BaseDataPreprocessor
 
 
 # --- Fixtures ---

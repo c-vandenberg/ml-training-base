@@ -1,7 +1,7 @@
 import logging
 import pytest
 
-from ml_training_base import configure_logger
+from ml_training_base.utils.logging_utils import configure_logger
 
 LOGGER_NAME = "ml_training_base.utils.logging.logging_utils"
 

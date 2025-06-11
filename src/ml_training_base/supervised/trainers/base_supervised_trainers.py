@@ -7,7 +7,9 @@ import tensorflow as tf
 from tensorflow.keras.callbacks import (Callback, EarlyStopping, TensorBoard,
                                         ReduceLROnPlateau, ModelCheckpoint)
 
-from ml_training_base import BaseTrainingEnvironment, configure_logger, load_config
+from ml_training_base.supervised.environments.base_training_environments import BaseTrainingEnvironment
+from ml_training_base.utils.config_utils import load_config
+from ml_training_base.utils.logging_utils import configure_logger
 
 
 class BaseSupervisedTrainer(ABC):

@@ -1,7 +1,7 @@
 import pytest
 
-from ml_training_base import configure_logger
-from ml_training_base import BaseSupervisedDataLoader
+from ml_training_base.utils.logging_utils import configure_logger
+from ml_training_base.supervised.data.base_supervised_data_loader import BaseSupervisedDataLoader
 
 # --- Fixtures ---
 

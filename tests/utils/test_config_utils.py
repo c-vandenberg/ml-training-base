@@ -3,7 +3,7 @@ import pytest
 import yaml
 import tempfile
 
-from ml_training_base import load_config
+from ml_training_base.utils.config_utils import load_config
 
 # --- Fixtures ---
 
