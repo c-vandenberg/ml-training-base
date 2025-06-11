@@ -5,8 +5,8 @@ import yaml
 import tempfile
 from unittest.mock import patch
 
-from ml_training_base.supervised.trainers.base_supervised_trainers import BaseSupervisedTrainer
-from ml_training_base.supervised.environments.base_training_environments import BaseTrainingEnvironment
+from ml_training_base import BaseSupervisedTrainer
+from ml_training_base import BaseTrainingEnvironment
 
 # --- Fixtures ---
 

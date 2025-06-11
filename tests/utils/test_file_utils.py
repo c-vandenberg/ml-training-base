@@ -3,7 +3,7 @@ import logging
 from pathlib import Path
 from unittest.mock import MagicMock, call
 
-from ml_training_base.utils.files.files_utils import write_strings_to_file
+from ml_training_base import write_strings_to_file
 
 # --- Fixtures ---
 

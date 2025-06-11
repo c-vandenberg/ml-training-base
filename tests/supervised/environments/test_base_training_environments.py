@@ -5,10 +5,7 @@ import pytest
 import torch
 import tensorflow as tf
 
-from ml_training_base.supervised.environments.base_training_environments import (
-    KerasTrainingEnvironment,
-    PyTorchTrainingEnvironment
-)
+from ml_training_base import KerasTrainingEnvironment, PyTorchTrainingEnvironment
 
 # --- Fixtures ---
 

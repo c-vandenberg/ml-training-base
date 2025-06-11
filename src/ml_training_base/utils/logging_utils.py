@@ -1,5 +1,6 @@
 import logging
 
+
 def configure_logger(log_path: str) -> logging.Logger:
     """
     Configures and returns a module-specific logger.

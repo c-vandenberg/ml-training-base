@@ -1,15 +1,13 @@
 import os
-import yaml
 from abc import ABC, abstractmethod
 from typing import Dict, Any, List, Union
 
-from ml_training_base.supervised.environments.base_training_environments import BaseTrainingEnvironment
-from ml_training_base.utils.logging.logging_utils import configure_logger
-
+import torch
 import tensorflow as tf
 from tensorflow.keras.callbacks import (Callback, EarlyStopping, TensorBoard,
                                         ReduceLROnPlateau, ModelCheckpoint)
-import torch
+
+from ml_training_base import BaseTrainingEnvironment, configure_logger, load_config
 
 
 class BaseSupervisedTrainer(ABC):
@@ -31,7 +29,7 @@ class BaseSupervisedTrainer(ABC):
         Logger instance for logging messages.
     """
     def __init__(self, config_path: str, training_env: BaseTrainingEnvironment):
-        self._config: Dict[str, Any] = self._load_config(config_path)
+        self._config: Dict[str, Any] = load_config(config_path)
         self._training_env = training_env
         self._logger = self._setup_logger()
 
@@ -178,39 +176,6 @@ class BaseSupervisedTrainer(ABC):
         os.makedirs(os.path.dirname(log_path), exist_ok=True)
 
         return configure_logger(log_path)
-
-    @staticmethod
-    def _load_config(config_path: str) -> dict:
-        """
-        Loads configuration from a YAML file.
-
-        Parameters
-        ----------
-        config_path : str
-            Path to the YAML configuration file.
-
-        Returns
-        -------
-        Dict[str, Any]
-            A dictionary containing the configuration.
-
-        Raises
-        ------
-        FileNotFoundError
-            If the configuration file does not exist at `config_path`.
-        yaml.YAMLError
-            If there is an error parsing the YAML file.
-        """
-        if not os.path.exists(config_path):
-            raise FileNotFoundError(f"Configuration file not found at: {config_path}")
-
-        with open(config_path, 'r') as file:
-            try:
-                config: Dict[str, Any] = yaml.safe_load(file)
-            except yaml.YAMLError as e:
-                raise yaml.YAMLError(f"Error parsing YAML file: {e}")
-
-        return config
 
     @property
     def config(self) -> Dict[str, Any]:
