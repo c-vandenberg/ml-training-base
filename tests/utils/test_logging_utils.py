@@ -8,21 +8,20 @@ LOGGER_NAME = "ml_training_base.utils.logging.logging_utils"
 @pytest.fixture
 def clean_logger():
     """A pytest fixture to ensure the logger is clean before and after a test."""
-    # --- Setup: Get the logger and remove any existing handlers ---
+    # 1. Setup: Get the logger and remove any existing handlers
     logger = logging.getLogger(LOGGER_NAME)
 
-    # Store original handlers to restore them later if needed, though we'll clear
+    # 2. Store original handlers to restore them later if needed
     original_handlers = logger.handlers[:]
 
-    # Remove all handlers for a clean slate
+    # 3. Remove all handlers for a clean slate
     for handler in original_handlers:
         logger.removeHandler(handler)
 
-    # --- Yield control to the test ---
+    # 4. Yield control to the test ---
     yield logger
 
-    # --- Teardown: Clean up after the test is done ---
-    # It's good practice to remove handlers added during the test
+    # 5. Teardown: Clean up after the test is done (Good practice to remove handlers added during the test)
     for handler in list(logger.handlers):
         handler.close()
         logger.removeHandler(handler)

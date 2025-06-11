@@ -37,6 +37,7 @@ class ConcreteTrainer(BaseSupervisedTrainer):
     def _save_model(self):
         pass
 
+
 @pytest.fixture
 def mock_config(tmp_path) -> dict: # Use the tmp_path fixture from pytest
     """
@@ -49,6 +50,7 @@ def mock_config(tmp_path) -> dict: # Use the tmp_path fixture from pytest
         "data": {"logger_path": str(log_dir / "test.log")},
         "determinism": {}
     }
+
 
 @pytest.fixture
 def mock_config_file(mock_config: dict) -> str:
@@ -67,12 +69,14 @@ def mock_config_file(mock_config: dict) -> str:
 
     os.remove(tmp_path)
 
+
 @pytest.fixture
 def mock_logger():
     """
     Provides a mock logger.
     """
     return logging.getLogger("test_logger")
+
 
 def test_trainer_run_orchestration(mock_config_file: str, mock_logger: logging.Logger):
     """

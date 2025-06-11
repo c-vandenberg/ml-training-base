@@ -3,6 +3,7 @@ import pytest
 from ml_training_base.utils.logging.logging_utils import configure_logger
 from ml_training_base.supervised.utils.data.base_supervised_data_loader import BaseSupervisedDataLoader
 
+
 class ConcreteDataLoader(BaseSupervisedDataLoader):
     def setup_datasets(self):
         """
@@ -12,10 +13,12 @@ class ConcreteDataLoader(BaseSupervisedDataLoader):
         self._valid_dataset = "Validation Dataset Ready"
         self._test_dataset = "Test Dataset Ready"
 
+
 @pytest.fixture
 def mock_logger():
     # Reuse or create a logger using /dev/null on Unix to discard logs
     return configure_logger("/dev/null")
+
 
 def test_base_data_loader_init(mock_logger):
     """
@@ -35,6 +38,7 @@ def test_base_data_loader_init(mock_logger):
     # Check for error if sum of splits is invalid
     with pytest.raises(ValueError, match="sum of `test_split` and `validation_split`"):
         ConcreteDataLoader(test_split=0.5, validation_split=0.6, logger=mock_logger)
+
 
 def test_base_data_loader_getters(mock_logger):
     """

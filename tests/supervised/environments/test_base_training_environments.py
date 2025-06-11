@@ -10,6 +10,7 @@ from ml_training_base.supervised.environments.base_training_environments import 
     PyTorchTrainingEnvironment
 )
 
+
 @pytest.fixture
 def mock_config():
     """
@@ -25,12 +26,14 @@ def mock_config():
         }
     }
 
+
 @pytest.fixture
 def mock_logger():
     """
     Provides a mock logger for tests.
     """
     return logging.getLogger("test_logger")
+
 
 def test_keras_environment_setup(mock_config, mock_logger):
     """
@@ -51,6 +54,7 @@ def test_keras_environment_setup(mock_config, mock_logger):
 
     np.testing.assert_allclose(tf_random_nums_1.numpy(), tf_random_nums_2.numpy())
 
+
 def test_pytorch_environment_setup(mock_config, mock_logger):
     """
     Tests that PyTorch environment sets seeds correctly.
@@ -66,6 +70,7 @@ def test_pytorch_environment_setup(mock_config, mock_logger):
     torch_random_nums_2 = torch.rand(5)
 
     assert torch.equal(torch_random_nums_1, torch_random_nums_2)
+
 
 def test_missing_config_key_error(mock_logger):
     """
