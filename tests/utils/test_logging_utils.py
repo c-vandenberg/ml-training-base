@@ -3,7 +3,7 @@ import pytest
 
 from ml_training_base.utils.logging_utils import configure_logger
 
-LOGGER_NAME = "ml_training_base.utils.logging.logging_utils"
+LOGGER_NAME = "ml_training_base.utils.logging_utils"
 
 
 @pytest.fixture
