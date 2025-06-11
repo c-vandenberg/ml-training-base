@@ -1,6 +1,7 @@
 import logging
 from abc import ABC, abstractmethod
 
+
 class BaseSupervisedDataLoader(ABC):
     """
     A base class for data loading and splitting in supervised learning tasks.

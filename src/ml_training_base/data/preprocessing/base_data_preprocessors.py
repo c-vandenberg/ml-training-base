@@ -4,6 +4,7 @@ from typing import List, Optional, TypeVar, Generic
 
 T = TypeVar('T')
 
+
 class BaseDataPreprocessor(Generic[T]):
     """
     A generic base class providing data preprocessing utilities for machine

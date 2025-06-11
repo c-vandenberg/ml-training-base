@@ -8,6 +8,7 @@ import numpy as np
 import tensorflow as tf
 import torch
 
+
 class BaseTrainingEnvironment(ABC):
     """
     Abstract base class for setting up a training environment.
@@ -91,6 +92,7 @@ class BaseTrainingEnvironment(ABC):
             The subsection of the config related to determinism.
         """
         raise NotImplementedError
+
 
 class KerasTrainingEnvironment(BaseTrainingEnvironment):
     """
