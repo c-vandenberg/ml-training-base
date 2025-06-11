@@ -7,7 +7,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ml-training-base"
-version = "0.3.3"
+version = "0.3.4"
 description = "A base library for ML training (supervised) with environment setup and logging."
 readme = "README.md"
 license = { text = "MIT"}

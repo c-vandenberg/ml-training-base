@@ -8,7 +8,9 @@ LOGGER_NAME = "ml_training_base.utils.logging_utils"
 
 @pytest.fixture
 def clean_logger():
-    """A pytest fixture to ensure the logger is clean before and after a test."""
+    """
+    A pytest fixture to ensure the logger is clean before and after a test.
+    """
     # 1. Setup: Get the logger and remove any existing handlers
     logger = logging.getLogger(LOGGER_NAME)
 
@@ -19,10 +21,10 @@ def clean_logger():
     for handler in original_handlers:
         logger.removeHandler(handler)
 
-    # 4. Yield control to the test ---
+    # 4. Yield control to the test
     yield logger
 
-    # 5. Teardown: Clean up after the test is done (Good practice to remove handlers added during the test)
+    # 5. Teardown: Clean up after the test is done
     for handler in list(logger.handlers):
         handler.close()
         logger.removeHandler(handler)
@@ -42,10 +44,10 @@ def test_configure_logger(tmp_path, clean_logger):
     # 1. Create a path to a log file inside the temporary directory
     log_path = tmp_path / "test.log"
 
-    # 2. Configure the logger. It will now add its handlers to the clean logger.
+    # 2. Configure the logger.
     logger = configure_logger(log_path=str(log_path))
 
-    # Assert that our specific logger instance was configured
+    # 3. Assert that the specific test logger instance was configured
     assert logger.name == LOGGER_NAME
     assert len(logger.handlers) == 2, "Expected a StreamHandler and a FileHandler"
 
