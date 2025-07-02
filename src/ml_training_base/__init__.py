@@ -19,7 +19,7 @@ from ml_training_base.supervised.trainers.base_supervised_trainers import (
 
 from ml_training_base.utils.config_utils import load_config
 from ml_training_base.utils.files_utils import write_strings_to_file
-from ml_training_base.utils.logging_utils import configure_logger
+from ml_training_base.utils.logging_utils import configure_single_level_logger, configure_multi_level_logger
 
 __all__ = [
     # Public Data Preprocessing Classes
@@ -41,5 +41,6 @@ __all__ = [
     # Public Utility Functions
     "load_config",
     "write_strings_to_file",
-    "configure_logger"
+    "configure_single_level_logger",
+    "configure_multi_level_logger"
 ]
