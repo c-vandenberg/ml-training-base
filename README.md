@@ -36,7 +36,7 @@ pip install ml-training-base
 3. **Import** the classes in your script or Jupyter notebook:
 ```
 import logging
-from ml_training_base.data.utils.logging_utils import configure_logger
+from ml_training_base.data.utils.logging_utils import cconfigure_single_level_logger
 from ml_training_base.supervised.environments.base_training_environments import KerasTrainingEnvironment
 from ml_training_base.supervised.trainers.base_supervised_trainers import BaseSupervisedTrainer
 ```
@@ -131,7 +131,9 @@ ml-training-base/
 
 ### Key Modules
 * `data/utils/logging_utils.py`:
-  * Contains `configure_logger(log_path)` utility, which sets up a standardized console and file logger for use throughout the package.
+  * Contains logger utilities, which sets up a standardized console and file logger for use throughout the package. File logger writes to a single file for all log levels.
+  * `configure_single_level_logger()`: File logger that writes to a single file for all log levels.
+  * `configure_multi_level_logger`: File logger that writes to separate files for each log level.
 * `supervised/environments/base_training_environments.py`: 
   * Defines the `BaseEnvironment` abstract class for handling environment setup.
   * Provides concrete, framework-specific implementations like `KerasTrainingEnvironment` and `PyTorchTrainingEnvironment` that manage deterministic setup (setting seeds, configuring hardware options, etc.).

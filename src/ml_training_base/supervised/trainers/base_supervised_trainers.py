@@ -9,7 +9,7 @@ from tensorflow.keras.callbacks import (Callback, EarlyStopping, TensorBoard,
 
 from ml_training_base.supervised.environments.base_training_environments import BaseTrainingEnvironment
 from ml_training_base.utils.config_utils import load_config
-from ml_training_base.utils.logging_utils import configure_logger
+from ml_training_base.utils.logging_utils import configure_single_level_logger
 
 
 class BaseSupervisedTrainer(ABC):
@@ -177,7 +177,7 @@ class BaseSupervisedTrainer(ABC):
         log_path = self._config.get('data', {}).get('logger_path', 'var/log/default_logs.log')
         os.makedirs(os.path.dirname(log_path), exist_ok=True)
 
-        return configure_logger(log_path)
+        return configure_single_level_logger(log_path)
 
     @property
     def config(self) -> Dict[str, Any]:

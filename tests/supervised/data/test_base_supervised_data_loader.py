@@ -1,6 +1,6 @@
 import pytest
 
-from ml_training_base.utils.logging_utils import configure_logger
+from ml_training_base.utils.logging_utils import configure_single_level_logger
 from ml_training_base.supervised.data.base_supervised_data_loader import BaseSupervisedDataLoader
 
 # --- Fixtures ---
@@ -8,7 +8,7 @@ from ml_training_base.supervised.data.base_supervised_data_loader import BaseSup
 @pytest.fixture
 def mock_logger():
     # Reuse or create a logger using /dev/null on Unix to discard logs
-    return configure_logger("/dev/null")
+    return configure_single_level_logger("/dev/null")
 
 # --- Test Classes and Functions ---
 
