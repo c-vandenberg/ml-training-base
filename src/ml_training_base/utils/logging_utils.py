@@ -6,18 +6,74 @@ class LevelFilter(logging.Filter):
     """
     A custom log filter that allows only records of a specific level to pass.
     """
-    def __init(self, level: int):
+    def __init__(self, level: int):
         super().__init__()
         self._level = level
 
     def filter(self, record):
+        """
+        Determines if a log record should be processed.
+
+        Returns
+        -------
+        bool
+            True if the record's level matches the filter's level, False otherwise.
+        """
         return record.levelno == self._level
+
+
+def configure_single_level_logger(
+    name: str = __name__,
+    log_path: str = '../var/log/default_log.logs',
+    base_level = logging.DEBUG
+) -> logging.Logger:
+    """
+    Configures a module-specific logger that writes to a single file for each log level.
+
+    Parameters
+    ----------
+    name : str, optional
+        The name for the logger instance.
+    log_path : str, optional
+        The directory where log files will be saved.
+    base_level : int, optional
+        The lowest level of message the logger will process.
+
+    Returns
+    ----------
+        logging.Logger: Configured logger.
+    """
+    # 1. Get the logger instance and set its base level
+    logger = logging.getLogger(name)
+    logger.setLevel(base_level)
+
+    # 1.1. Prevent duplicate logs if logger already configured with handlers
+    if logger.hasHandlers():
+        logger.handlers.clear()
+
+    # 2. Configure console handler for level INFO and above
+    console_handler = logging.StreamHandler()
+    console_handler.setLevel(logging.INFO)
+    console_formatter = logging.Formatter('%(levelname)s - %(message)s')
+    console_handler.setFormatter(console_formatter)
+
+    # 3. Configure file handler for level DEBUG and above
+    file_handler = logging.FileHandler(log_path)
+    file_handler.setLevel(logging.DEBUG)
+    file_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    file_handler.setFormatter(file_formatter)
+
+    # 4. Add handlers to the logger
+    logger.addHandler(console_handler)
+    logger.addHandler(file_handler)
+
+    return logger
 
 
 def configure_multi_level_logger(
     name: str = __name__,
     log_dir: str = './logs',
-    base_level=logging.DEBUG
+    base_level = logging.DEBUG
 ) -> logging.Logger:
     """
     Configures a module-specific logger that writes to separate files for each log level.
@@ -43,10 +99,14 @@ def configure_multi_level_logger(
     logger = logging.getLogger(name)
     logger.setLevel(base_level)
 
-    # Prevent messages from propagating to the root logger
+    # 1.1. Prevent messages from propagating to the root logger
     logger.propagate = False
 
-    # Define the log files and the level for each
+    # 1.2. Clear existing handlers to prevent duplicate logs.
+    if logger.hasHandlers():
+        logger.handlers.clear()
+
+    # 1.3. Define the log files and the level for each
     log_levels = {
         'debug': logging.DEBUG,
         'info': logging.INFO,
@@ -54,7 +114,7 @@ def configure_multi_level_logger(
         'error': logging.ERROR
     }
 
-    # Standard format for log messages
+    # 1.4. Standard format for log messages
     formatter = logging.Formatter(
         '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
     )
@@ -79,42 +139,5 @@ def configure_multi_level_logger(
     console_handler.setLevel(base_level)
     console_handler.setFormatter(formatter)
     logger.addHandler(console_handler)
-
-    return logger
-
-
-def configure_single_level_logger(log_path: str) -> logging.Logger:
-    """
-    Configures a module-specific logger that writes to a single file for each log level.
-
-    Parameters
-    ----------
-    log_path : str, optional
-        The directory where log files will be saved.
-
-    Returns
-    ----------
-        logging.Logger: Configured logger.
-    """
-    logger = logging.getLogger(__name__)
-    logger.setLevel(logging.DEBUG)
-
-    # Prevent adding multiple handlers if the logger already has handlers
-    if not logger.handlers:
-        # Console handler for level INFO and above
-        console_handler = logging.StreamHandler()
-        console_handler.setLevel(logging.INFO)
-        console_formatter = logging.Formatter('%(levelname)s - %(message)s')
-        console_handler.setFormatter(console_formatter)
-
-        # File handler for level DEBUG and above
-        file_handler = logging.FileHandler(log_path)
-        file_handler.setLevel(logging.DEBUG)
-        file_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-        file_handler.setFormatter(file_formatter)
-
-        # Add handlers to the logger
-        logger.addHandler(console_handler)
-        logger.addHandler(file_handler)
 
     return logger
