@@ -1,7 +1,7 @@
 import logging
 import pytest
 
-from ml_training_base.utils.logging_utils import configure_logger
+from ml_training_base.utils.logging_utils import configure_single_level_logger
 
 LOGGER_NAME = "ml_training_base.utils.logging_utils"
 
@@ -45,7 +45,7 @@ def test_configure_logger(tmp_path, clean_logger):
     log_path = tmp_path / "test.log"
 
     # 2. Configure the logger.
-    logger = configure_logger(log_path=str(log_path))
+    logger = configure_single_level_logger(log_path=str(log_path))
 
     # 3. Assert that the specific test logger instance was configured
     assert logger.name == LOGGER_NAME
