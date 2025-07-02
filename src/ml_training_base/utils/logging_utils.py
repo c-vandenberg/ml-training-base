@@ -24,7 +24,7 @@ class LevelFilter(logging.Filter):
 
 def configure_single_level_logger(
     name: str = __name__,
-    log_path: str = '../var/log/default_log.logs',
+    log_path: str = '../var/log/default_log.log',
     base_level = logging.DEBUG
 ) -> logging.Logger:
     """
@@ -78,7 +78,7 @@ def configure_single_level_logger(
 
 def configure_multi_level_logger(
     name: str = __name__,
-    log_dir: str = './logs',
+    log_dir: str = '../var/log',
     base_level = logging.DEBUG
 ) -> logging.Logger:
     """
@@ -99,7 +99,7 @@ def configure_multi_level_logger(
         The fully configured logger instance.
     """
     try:
-        os.makedirs(os.path.dirname(log_dir), exist_ok=True)
+        os.makedirs(log_dir, exist_ok=True)
     except OSError as e:
         print(f"Error creating log directory {os.path.dirname(log_dir)}: {e}")
         raise
