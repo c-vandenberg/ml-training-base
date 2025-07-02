@@ -43,6 +43,12 @@ def configure_single_level_logger(
     ----------
         logging.Logger: Configured logger.
     """
+    try:
+        os.makedirs(os.path.dirname(log_path), exist_ok=True)
+    except OSError as e:
+        print(f"Error creating log directory {os.path.dirname(log_path)}: {e}")
+        raise
+
     # 1. Get the logger instance and set its base level
     logger = logging.getLogger(name)
     logger.setLevel(base_level)
@@ -92,8 +98,11 @@ def configure_multi_level_logger(
     logging.Logger
         The fully configured logger instance.
     """
-    # Ensure the log directory exists.
-    os.makedirs(log_dir, exist_ok=True)
+    try:
+        os.makedirs(os.path.dirname(log_dir), exist_ok=True)
+    except OSError as e:
+        print(f"Error creating log directory {os.path.dirname(log_dir)}: {e}")
+        raise
 
     # 1. Get the logger instance and set its base level
     logger = logging.getLogger(name)
