@@ -15,17 +15,15 @@ def clean_logger():
     # 1. Setup: Get the logger and remove any existing handlers
     logger = logging.getLogger(LOGGER_NAME_SINGLE)
 
-    # 2. Store original handlers to restore them later if needed
-    original_handlers = logger.handlers[:]
+    # 2. Remove all handlers for a clean slate
+    if logger.hasHandlers():
+        for handler in list(logger.handlers):
+            logger.removeHandler(handler)
 
-    # 3. Remove all handlers for a clean slate
-    for handler in original_handlers:
-        logger.removeHandler(handler)
-
-    # 4. Yield control to the test
+    # 3. Yield control to the test
     yield logger
 
-    # 5. Teardown: Clean up after the test is done
+    # 4. Teardown: Clean up after the test is done
     for handler in list(logger.handlers):
         handler.close()
         logger.removeHandler(handler)
